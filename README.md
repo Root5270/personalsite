@@ -1,68 +1,84 @@
-# Alina Li 个人作品集｜内容结构与设计规范
+# Alina Li 作品集 2.0
 
-> 当前已升级为完整前后端网站。请先阅读 [启动、留言管理与 GitHub 上传说明](FULLSTACK.md)。在项目根目录运行 `npm start`，访问 http://127.0.0.1:4174 。以下内容保留作视觉设计记录；文末“直接打开 HTML”的方式仅适用于静态展示，不支持新增的详情 API 和留言功能。
+基于 Next.js 16、React 19、Vercel 与 Supabase 的全栈个人作品集。旧版原生 Node 网站仍保留在相邻的 `alina-portfolio` 目录，便于回退与对照。
 
-## 当前版本：参考图视觉优化
+GitHub 仓库暂时保留旧版 `dist` 静态文件，确保迁移到 Vercel 期间原 GitHub Pages 链接仍可访问。Vercel 上线并验证稳定后，可以再移除 `dist`。
 
-本轮采用白色圆角画布、浅蓝外框、海军蓝文字（#142C50）、天蓝行动按钮（#0089ED）。中文标题使用宋体字体栈，英文使用 Georgia，正文保留无衬线字体。内容最大宽度 1120px，作品改为桌面双列、手机单列卡片；能力区以轻分隔线组织；联系区改为白底收尾。新样式集中在 `dist/reference-theme.css`，并覆盖以下第一版规范中对应的视觉数值。已检查 390px 与 1280px 布局，图片正常加载且无页面横向溢出。
+## 已完成
 
-## 1. 内容结构
+- 响应式视觉入口页与作品集主页
+- 数据驱动的动态作品详情 `/work/[slug]`
+- `GET /api/projects` 与 `GET /api/projects/[slug]`
+- 联系表单与 `POST /api/contact`
+- Supabase Auth 管理员登录
+- 作品新增、编辑、排序、草稿/发布、删除
+- 留言查看、状态更新与删除
+- 未配置 Supabase 时使用内置项目数据展示前台
+- Supabase 数据表、RLS 策略和初始作品数据
 
-### 一级页面：视觉展示
+## 本地运行
 
-- 用一句核心表达建立身份定位：**“让 AI 有形，让复杂变得清晰。”**
-- 以 Luma Bar、遇见集、DriftLearn 的现有项目视觉作为漂浮画面，配合鼠标响应的点阵与光场效果。
-- 页面只保留一个主要动作：进入作品集，避免首屏信息分散。
+要求 Node.js 22 或以上版本。
 
-### 二级页面：个人作品集
+```bash
+pnpm install
+pnpm dev
+```
 
-1. Hero：身份定位、价值主张、精选作品预览与主行动按钮。
-2. 个人经历：头像、个人介绍、联系方式与项目数据。
-3. 精选项目：Luma Bar、遇见集、DriftLearn、空间研究与系统设计。
-4. 个人优势：问题定义、AI 体验、视觉系统、协作交付。
-5. 联系收尾：邮件入口、所在地与返回顶部。
+访问：
 
-## 2. 设计规范
+- 视觉首页：`http://localhost:3000`
+- 作品集：`http://localhost:3000/portfolio`
+- 管理后台：`http://localhost:3000/admin/login`
 
-### 视觉方向
+## 连接 Supabase
 
-- 关键词：亮色、克制、高级、通透、轻科技。
-- 核心记忆点：大字号排版、冷白背景、半透明光场、错位项目画面、克制的紫色强调。
-- 避免常见模板感：不使用通用渐变按钮墙、统一小卡片矩阵或模板化头像介绍，而通过不同尺度的项目版式建立节奏。
+1. 在 Supabase 创建项目。
+2. 打开 SQL Editor，依次执行：
+   - `supabase/migrations/001_initial_schema.sql`
+   - `supabase/seed.sql`
+3. 在 Authentication 中创建管理员用户，邮箱必须与 `ADMIN_EMAIL` 一致。
+4. 复制 `.env.example` 为 `.env.local` 并填写：
 
-### 色彩
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxx
+SUPABASE_SERVICE_ROLE_KEY=your-server-only-key
+ADMIN_EMAIL=your-admin@example.com
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
 
-- 页面底色：`#F7F8FC`
-- 主文字：`#11131A`
-- 次级文字：`#686B77`
-- 主强调紫：`#6F5CFF`
-- 辅助青：`#65DCE6`
-- 行动高亮：`#DFFF73`
-- 描边：`rgba(17, 19, 26, 0.13)`
+`SUPABASE_SERVICE_ROLE_KEY` 只能放在 Vercel 环境变量或本机 `.env.local`，不能提交到 GitHub，也不能使用 `NEXT_PUBLIC_` 前缀。
 
-### 字体与字号
+## 部署到 Vercel
 
-- 中文与正文：系统无衬线字体，优先 PingFang SC / Microsoft YaHei。
-- 英文与大标题：系统无衬线字体；局部使用 Georgia 形成理性与人文的对比。
-- PC Hero：`clamp(3.2rem, 5.5vw, 6.6rem)`。
-- 移动端 Hero：`clamp(3rem, 14.5vw, 5.4rem)`。
-- 正文基准：16px；高频标签不低于 14px，辅助元信息不低于 12px。
+1. 将本目录内容推送到 GitHub 仓库根目录。
+2. 在 Vercel 导入该仓库，Framework Preset 选择 Next.js。
+3. 在 Project Settings → Environment Variables 添加 `.env.example` 中的五个变量。
+4. 将 `NEXT_PUBLIC_SITE_URL` 改为 Vercel 分配的 HTTPS 域名。
+5. 重新部署。
 
-### 栅格与间距
+Vercel 会自动运行 `next build`，不需要额外的 `vercel.json`。
 
-- PC 内容宽度：最大 1440px，左右边距 40px。
-- 移动端左右边距：16px。
-- PC 大区块纵向间距：140px；移动端 96px。
-- 大卡片圆角：28px；移动端 20px。
-- PC 以双栏与错位构图为主；移动端改为单列，保证图片不横向溢出。
+## 内容格式
 
-### 交互与动效
+后台的“内容章节”每行格式为：
 
-- 开场页：鼠标驱动的微弱视差、动态点阵与光场。
-- 内容页：进入视口时轻微上移淡入；导航滚动后显示分隔线。
-- 动效时间控制在 250–800ms，并支持 `prefers-reduced-motion`。
-- 所有主要链接保持清晰的 hover / focus 反馈，移动端触控区域不小于约 44px。
+```text
+章节标题｜章节正文
+```
 
-## 3. 本地预览
+图片每行格式为：
 
-直接打开 `dist/index.html` 即可浏览；也可在 `dist` 目录启动任意静态文件服务器。
+```text
+/assets/example.jpg｜图片说明
+```
+
+当前图片位于 `public/assets`。后续如果需要直接在后台上传图片，可以再接入 Supabase Storage。
+
+## 安全说明
+
+- 前台只能读取 `published` 项目。
+- 留言表不向浏览器直接开放读写权限，提交由服务端 Route Handler 校验后写入。
+- 后台每个写操作都会重新验证 Supabase 用户和 `ADMIN_EMAIL`。
+- Service Role 密钥仅在服务器端使用。

@@ -1,14 +1,29 @@
 {
-  "name": "alina-portfolio",
-  "version": "1.0.0",
+  "name": "alina-portfolio-next",
+  "version": "2.0.0",
   "private": true,
-  "type": "module",
-  "description": "Alina Li portfolio with project API and persistent contact inbox",
-  "engines": { "node": ">=22" },
   "scripts": {
-    "start": "node --env-file-if-exists=.env server/index.mjs",
-    "dev": "node --env-file-if-exists=.env --watch server/index.mjs",
-    "test": "node --test tests/server.test.mjs",
-    "inbox": "node --env-file-if-exists=.env server/inbox.mjs"
-  }
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.116.0",
+    "next": "16.3.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.28.2"
 }
