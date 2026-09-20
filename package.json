@@ -1,0 +1,14 @@
+{
+  "name": "alina-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Alina Li portfolio with project API and persistent contact inbox",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server/index.mjs",
+    "dev": "node --env-file-if-exists=.env --watch server/index.mjs",
+    "test": "node --test tests/server.test.mjs",
+    "inbox": "node --env-file-if-exists=.env server/inbox.mjs"
+  }
+}
